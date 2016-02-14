@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Learning Form";
+}
+
+@model LearningForms.Models.FormData
+
+<!-- Weakly typed synchronous form -->
+<h2>Weakly typed form</h2>
+<form action="/Form/FormOne" method="post">
+    <input type="text" name="textBoxStringData" />
+    <input type="checkbox" name="checkboxData" />
+    <input type="number" name="textBoxIntData" />
+
+    <input type="submit" value="Submit weakly typed form" />
+</form>
+
+
+<!-- Strongly typed synchronous form-->
+<h2>Strongly typed synchronous form</h2>
+@using (Html.BeginForm("FormTwo", "Form", FormMethod.Post))
+{
+    @Html.TextBoxFor(m => m.TextBoxStringData)
+    @Html.CheckBoxFor(model => model.CheckboxData)
+    @Html.TextBoxFor(model => model.TextBoxIntData)
+
+    <input type="submit" value="Submit strongly type synchronous form" />
+}
+
+<!-- Strongly typed asynchronous form -->
+<h2>Strongly typed asynchronous form</h2>
+@using (Ajax.BeginForm("FormThree", "Form", new AjaxOptions { LoadingElementId = "loader", OnSuccess = "onSuccess" }))
+{
+    @Html.TextBoxFor(m => m.TextBoxStringData)
+    @Html.CheckBoxFor(m => m.CheckboxData)
+    @Html.TextBoxFor(m => m.TextBoxIntData)
+
+    <input type="submit" value="Submit strongly typed asynchronous form" />
+}
+
+<div id="loader" style="display:none">Loading</div>
+
+<!-- Posting with jQuery AJAX-->
+<h2>Posting with jQuery AJAX</h2>
+<input type="text" id="text" />
+<input type="checkbox" id="checkbox" />
+<input type="number" id="number" />
+
+<button onclick="submit()">Post with jQuery AJAX</button>
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script>
+
+    //submit data with jQuery AJAX
+    function submit() {
+        var data = {
+            TextBoxStringData: $('#text').val(),
+            TextBoxIntData: $('#number').val(),
+            CheckboxData: $('#checkbox').is(':checked')
+        };
+
+        $.post("/Form/FormFour", { formData: data }, function () { alert('Successfully posted to server') });
+    }
+
+    //displays an alert message if strongly typed asynchronous form successfully posted to the server
+    function onSuccess() { alert("Successfully posted to server!"); }
+
+</script>
